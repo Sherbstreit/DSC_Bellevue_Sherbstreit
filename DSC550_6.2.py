@@ -43,7 +43,7 @@ for idx, ax in enumerate(axes):
     ax.set_xlabel(xaxes[idx], fontsize=20)
     ax.set_ylabel(yaxes[idx], fontsize=20)
     ax.tick_params(axis='both', labelsize=15)
-plt.show()
+plt.savefig('titanic_fig1.png')
 
 # set figure size
 plt.rcParams['figure.figsize'] = (20, 10)
@@ -101,7 +101,7 @@ axes[1, 1].bar(X_Embarked, Y_Embarked)
 axes[1, 1].set_title('Embarked', fontsize=25)
 axes[1, 1].set_ylabel('Counts', fontsize=20)
 axes[1, 1].tick_params(axis='both', labelsize=15)
-plt.show()
+plt.savefig('titanic_fig2.png')
 
 # set figure size
 plt.rcParams['figure.figsize'] = (15, 7)
@@ -116,7 +116,7 @@ visualizer.fit(X)
 visualizer.transform(X)
 # create png file of the image and also show in shell
 visualizer.show(outpath="data1.png")
-plt.show()
+plt.savefig('titanic_fig3.png')
 
 # set figure size and font size
 plt.rcParams['figure.figsize'] = (15, 7)
@@ -152,7 +152,7 @@ visualizer = ParallelCoordinates(classes=classes, features=num_features)
 visualizer.fit(X, y)
 visualizer.transform(X)
 # create PNG file and also display in shell
-visualizer.show(outpath="data2.png")
+visualizer.show(outpath="titanic_fig4.png")
 visualizer.show()
 
 # set figure size, make subplots
@@ -211,7 +211,7 @@ axes[1, 0].set_title('Embarked', fontsize=25)
 axes[1, 0].set_ylabel('Counts', fontsize=20)
 axes[1, 0].tick_params(axis='both', labelsize=15)
 axes[1, 0].legend((p5[0], p6[0]), ('Survived', 'Not-survived'), fontsize=15)
-plt.show()
+plt.savefig('titanic_fig5.png')
 
 
 # replace NaN values with median
@@ -257,7 +257,7 @@ plt.hist(df['Fare_log1p'], bins=40)
 plt.xlabel('Fare_log1p', fontsize=20)
 plt.ylabel('Counts', fontsize=20)
 plt.tick_params(axis='both', labelsize=15)
-plt.show()
+plt.savefig('titanic_fig6.png')
 
 # identify categorical features
 cat_features = ['Pclass', 'Sex', 'Embarked']
