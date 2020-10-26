@@ -4,6 +4,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from yellowbrick.features import Rank2D
 import os
+from sklearn.linear_model import LogisticRegression
+from yellowbrick.classifier import ConfusionMatrix
+from yellowbrick.classifier import ClassificationReport
+from yellowbrick.classifier import ROCAUC
 
 desired_width = 300
 pd.set_option('display.width', desired_width)
@@ -269,3 +273,72 @@ df_cat = df_cat.replace({'Pclass': {1: '1st', 2: '2nd', 3: '3rd'}})
 df_cat_dummies = pd.get_dummies(df_cat)
 # check the data
 print(df_cat_dummies.head(8))
+
+# here we will combine the numerical features and the dummie features together
+features_model = ['Age', 'SibSp', 'Parch', 'Fare_log1p']
+data_model_X = pd.concat([df[features_model], df_cat_dummies], axis=1)
+
+# create a whole target dataset that can be used for train and validation data splitting
+data_model_y = df.replace({'Survived': {1: 'Survived', 0: 'Not_survived'}})['Survived']
+# separate data into training and validation and check the details of the datasets
+# import packages
+from sklearn.model_selection import train_test_split
+
+# split the data
+X_train, X_val, y_train, y_val = train_test_split(data_model_X, data_model_y, test_size =0.3, random_state=11)
+
+# number of samples in each set
+print("No. of samples in training set: ", X_train.shape[0])
+print("No. of samples in validation set:", X_val.shape[0])
+
+# Survived and not-survived
+print('\n')
+print('No. of survived and not-survived in the training set:')
+print(y_train.value_counts())
+
+print('\n')
+print('No. of survived and not-survived in the validation set:')
+print(y_val.value_counts())
+
+
+# Instantiate the classification model
+model = LogisticRegression()
+
+#The ConfusionMatrix visualizer taxes a model
+classes = ['Not_survived','Survived']
+cm = ConfusionMatrix(model, classes=classes, percent=False)
+
+#Fit fits the passed model. This is unnecessary if you pass the visualizer a pre-fitted model
+cm.fit(X_train, y_train)
+
+#To create the ConfusionMatrix, we need some test data. Score runs predict() on the data
+#and then creates the confusion_matrix from scikit learn.
+cm.score(X_val, y_val)
+
+# change fontsize of the labels in the figure
+for label in cm.ax.texts:
+    label.set_size(20)
+
+#How did we do?
+cm.show(outpath="cmdata.png")
+
+# Precision, Recall, and F1 Score
+# set the size of the figure and the font size
+#%matplotlib inline
+plt.rcParams['figure.figsize'] = (15, 7)
+plt.rcParams['font.size'] = 20
+
+# Instantiate the visualizer
+visualizer = ClassificationReport(model, classes=classes)
+
+visualizer.fit(X_train, y_train)  # Fit the training data to the visualizer
+visualizer.score(X_val, y_val)  # Evaluate the model on the test data
+g = visualizer.poof()
+
+# ROC and AUC
+#Instantiate the visualizer
+visualizer = ROCAUC(model)
+
+visualizer.fit(X_train, y_train)  # Fit the training data to the visualizer
+visualizer.score(X_val, y_val)  # Evaluate the model on the test data
+g = visualizer.poof()
